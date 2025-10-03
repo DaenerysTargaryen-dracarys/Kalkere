@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,120 +5,144 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Survey Link Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #8B5FBF;
+      --primary-dark: #6B46C1;
+      --secondary: #F97316;
+      --accent: #06D6A0;
+      --light-bg: #FAF5FF;
+      --dark-text: #2D3748;
+      --light-text: #718096;
+      --card-bg: rgba(255, 255, 255, 0.9);
+    }
+    
     body {
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      background: linear-gradient(135deg, #E9D8FD 0%, #FED7D7 100%);
       font-family: 'Segoe UI', system-ui, sans-serif;
       margin: 0;
       padding: 0;
       min-height: 100vh;
     }
 
-    /* Clean container styling */
-    .clean-panel {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    /* Modern container styling */
+    .modern-panel {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(139, 95, 191, 0.15);
       padding: 2rem;
       margin-bottom: 1.5rem;
-      transition: box-shadow 0.3s;
+      transition: all 0.3s ease;
     }
     
-    .clean-panel:hover {
-      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.07);
+    .modern-panel:hover {
+      box-shadow: 0 15px 35px rgba(139, 95, 191, 0.25);
+      transform: translateY(-3px);
     }
 
-    /* Clean button styling */
-    .clean-btn {
+    /* Modern button styling */
+    .modern-btn {
       padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      border-radius: 12px;
       font-weight: 600;
       letter-spacing: 0.5px;
       border: none;
       transition: all 0.3s;
       cursor: pointer;
       font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
     }
     
-    .clean-btn:active {
-      transform: translateY(1px);
+    .modern-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
-    .clean-btn-main {
-      background: #3b82f6;
+    .modern-btn-primary {
+      background: var(--primary);
       color: #fff;
     }
-    .clean-btn-main:hover {
-      background: #2563eb;
-    }
-    .clean-btn-alt {
-      background: #64748b;
-      color: #fff;
-    }
-    .clean-btn-alt:hover {
-      background: #475569;
+    .modern-btn-primary:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 6px 12px rgba(139, 95, 191, 0.3);
     }
     
-    .clean-btn-success {
-      background: #10b981;
+    .modern-btn-secondary {
+      background: var(--secondary);
       color: #fff;
     }
-    .clean-btn-success:hover {
-      background: #059669;
+    .modern-btn-secondary:hover {
+      background: #EA580C;
+      box-shadow: 0 6px 12px rgba(249, 115, 22, 0.3);
+    }
+    
+    .modern-btn-accent {
+      background: var(--accent);
+      color: #fff;
+    }
+    .modern-btn-accent:hover {
+      background: #05BF85;
+      box-shadow: 0 6px 12px rgba(6, 214, 160, 0.3);
     }
 
     /* Input styling */
-    .clean-input {
+    .modern-input {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
       background: white;
       transition: all 0.3s;
-    }
-    
-    .clean-input:focus {
-      border: 1px solid #3b82f6;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    /* Clean table styling */
-    .clean-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     
-    .clean-table th, .clean-table td {
-      padding: 1rem;
-      text-align: center;
-      border-bottom: 1px solid #e2e8f0;
+    .modern-input:focus {
+      border: 1px solid var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modern table styling */
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
     
-    .clean-table th {
-      background: #f8fafc;
-      color: #475569;
+    .modern-table th, .modern-table td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    
+    .modern-table th {
+      background: var(--light-bg);
+      color: var(--primary-dark);
       font-weight: 600;
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     
-    .clean-table tr:last-child td {
+    .modern-table tr:last-child td {
       border-bottom: none;
     }
     
-    .clean-table tr:hover {
-      background: #f8fafc;
+    .modern-table tr:hover {
+      background: var(--light-bg);
     }
     
-    .clean-table tr.copied {
-      background: #d1fae5;
+    .modern-table tr.copied {
+      background: rgba(6, 214, 160, 0.1);
     }
 
     /* Loader animation */
@@ -129,87 +152,170 @@
       font-weight: 600;
       margin-top: 10px;
       font-size: 1rem;
-      color: #64748b;
+      color: var(--light-text);
     }
     
     /* Progress bar */
     .progress-container {
       width: 100%;
-      height: 6px;
-      background: #e2e8f0;
-      border-radius: 3px;
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 4px;
       margin: 1rem 0;
       overflow: hidden;
     }
     
     .progress-bar {
       height: 100%;
-      background: #3b82f6;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       width: 0%;
       transition: width 0.5s;
-      border-radius: 3px;
+      border-radius: 4px;
     }
     
     /* Header styling */
-    .clean-header {
+    .modern-header {
       text-align: center;
       margin-bottom: 2rem;
+      padding: 2rem;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 10px 25px rgba(139, 95, 191, 0.3);
+      position: relative;
+      overflow: hidden;
     }
     
-    .clean-header h1 {
+    .modern-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.3;
+    }
+    
+    .modern-header h1 {
       font-weight: 700;
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
-      color: #1e293b;
     }
     
-    .clean-header p {
+    .modern-header p {
       font-size: 1.1rem;
-      color: #64748b;
+      opacity: 0.9;
     }
     
     /* Footer styling */
-    .clean-footer {
+    .modern-footer {
       text-align: center;
       margin-top: 2rem;
-      padding: 1rem;
+      padding: 1.5rem;
       font-size: 0.9rem;
-      color: #64748b;
-      border-top: 1px solid #e2e8f0;
+      color: var(--light-text);
+      border-top: 1px solid #E2E8F0;
     }
     
     /* Status message */
     .status-message {
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
       margin: 1rem 0;
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
     
     .status-info {
-      background: #dbeafe;
-      color: #1e40af;
-      border-left: 4px solid #3b82f6;
+      background: rgba(139, 95, 191, 0.1);
+      color: var(--primary-dark);
+      border-left: 4px solid var(--primary);
     }
     
     /* File upload area */
     .file-upload {
-      border: 2px dashed #cbd5e1;
-      border-radius: 8px;
-      padding: 2rem;
+      border: 2px dashed #D1D5DB;
+      border-radius: 16px;
+      padding: 2.5rem;
       text-align: center;
       margin: 1rem 0;
       transition: all 0.3s;
+      background: var(--light-bg);
     }
     
     .file-upload:hover {
-      border-color: #3b82f6;
-      background: #f8fafc;
+      border-color: var(--primary);
+      background: rgba(139, 95, 191, 0.05);
     }
     
     .file-upload.dragover {
-      border-color: #3b82f6;
-      background: #eff6ff;
+      border-color: var(--primary);
+      background: rgba(139, 95, 191, 0.1);
+      box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.1);
+    }
+    
+    /* Card layout for store info */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .info-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-card i {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+    
+    .info-card h3 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--dark-text);
+    }
+    
+    .info-card p {
+      color: var(--light-text);
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .modern-header h1 {
+        font-size: 2rem;
+      }
+      
+      .modern-panel {
+        padding: 1.5rem;
+      }
+      
+      .modern-table {
+        font-size: 0.85rem;
+      }
+      
+      .modern-table th, .modern-table td {
+        padding: 0.75rem 0.5rem;
+      }
     }
   </style>
 </head>
@@ -217,25 +323,52 @@
   <div class="w-full max-w-6xl mx-auto">
     
     <!-- Header Panel -->
-    <div class="status-message status-info">
-               <h1>Survey Link Generator</h1>
-      <p>  Store: Name Kalkere
-         <p> Store Code K855</p>
-         <p> Use this wisely and take full responsibility for your choices.<p>
+    <div class="modern-header">
+      <h1><i class="fas fa-link mr-3"></i>Survey Link Generator</h1>
+      <p>Automatically generate survey links from Excel data</p>
+    </div>
+
+    <!-- Store Info Cards -->
+    <div class="info-cards">
+      <div class="info-card">
+        <i class="fas fa-store"></i>
+        <h3>Store Name</h3>
+        <p>Kalkere</p>
+      </div>
+      <div class="info-card">
+        <i class="fas fa-hashtag"></i>
+        <h3>Store Code</h3>
+        <p>K855</p>
+      </div>
+      <div class="info-card">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>Important Note</h3>
+        <p>Use this tool responsibly</p>
+      </div>
     </div>
 
     <!-- Upload Panel -->
-    <div class="clean-panel">
-      <h3 class="text-2xl font-semibold mb-6 text-gray-800">Upload Excel File</h3>
+    <div class="modern-panel">
+      <h3 class="text-2xl font-semibold mb-6 text-gray-800 flex items-center gap-2">
+        <i class="fas fa-file-upload text-purple-500"></i> Upload Excel File
+      </h3>
       
       <div class="status-message status-info">
-        Upload your Excel file with receipt data to generate survey links automatically.
+        <i class="fas fa-info-circle"></i>
+        <div>
+          <strong>Instructions:</strong> Upload your Excel file with receipt data to generate survey links automatically.
+          Ensure the file contains columns for Receipt No., Sales Type, Date, Time, and Sell-to Contact No.
+        </div>
       </div>
       
       <div class="file-upload" id="fileUploadArea">
+        <i class="fas fa-cloud-upload-alt text-4xl text-purple-400 mb-4"></i>
         <p class="text-gray-600 mb-2">Drag & drop your Excel file here or click to browse</p>
+        <p class="text-sm text-gray-500 mb-4">Supports .xlsx and .xls files</p>
         <input type="file" id="fileInput" accept=".xlsx, .xls" class="hidden">
-        <button onclick="document.getElementById('fileInput').click()" class="clean-btn clean-btn-alt mt-2">Select File</button>
+        <button onclick="document.getElementById('fileInput').click()" class="modern-btn modern-btn-secondary">
+          <i class="fas fa-folder-open"></i> Select File
+        </button>
         <p id="fileName" class="text-sm text-gray-500 mt-2"></p>
       </div>
       
@@ -244,26 +377,39 @@
       </div>
       
       <div class="flex flex-wrap gap-3">
-        <button id="generateBtn" onclick="processFile()" class="clean-btn clean-btn-main" disabled>Generate Links</button>
-        <button onclick="clearData()" class="clean-btn clean-btn-alt">Clear All</button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="clean-btn clean-btn-alt">Copy All Links</button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="clean-btn clean-btn-alt">Export CSV</button>
+        <button id="generateBtn" onclick="processFile()" class="modern-btn modern-btn-primary" disabled>
+          <i class="fas fa-cogs"></i> Generate Links
+        </button>
+        <button onclick="clearData()" class="modern-btn modern-btn-secondary">
+          <i class="fas fa-trash-alt"></i> Clear All
+        </button>
+        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="modern-btn modern-btn-accent">
+          <i class="fas fa-copy"></i> Copy All Links
+        </button>
+        <button id="exportBtn" onclick="exportToCSV()" disabled class="modern-btn modern-btn-secondary">
+          <i class="fas fa-file-export"></i> Export CSV
+        </button>
       </div>
       
-      <div id="loader">Generating links...</div>
+      <div id="loader" class="flex items-center justify-center gap-2">
+        <i class="fas fa-spinner fa-spin text-purple-500"></i>
+        <span>Processing file and generating links...</span>
+      </div>
     </div>
 
     <!-- Results Panel -->
-    <div class="clean-panel">
+    <div class="modern-panel">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-semibold text-gray-800">Generated Links</h3>
-        <div id="resultsCount" class="text-sm font-medium text-gray-600">
-          0 links generated
+        <h3 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+          <i class="fas fa-list text-purple-500"></i> Generated Links
+        </h3>
+        <div id="resultsCount" class="text-sm font-medium text-gray-600 bg-purple-50 px-3 py-1 rounded-full">
+          <i class="fas fa-link mr-1 text-purple-500"></i> 0 links generated
         </div>
       </div>
       
-      <div class="overflow-x-auto">
-        <table class="clean-table" id="linkTable">
+      <div class="overflow-x-auto rounded-xl shadow-sm">
+        <table class="modern-table" id="linkTable">
           <thead>
             <tr>
               <th>Receipt No.</th>
@@ -277,8 +423,8 @@
     </div>
     
     <!-- Footer -->
-    <div class="clean-footer">
-      <p>Survey Link Generator • Desinged By ( MATRIX ) </p>
+    <div class="modern-footer">
+      <p><i class="fas fa-code mr-1 text-purple-500"></i> Survey Link Generator • Designed By <strong class="text-purple-600">MATRIX</strong></p>
     </div>
 
   </div>
@@ -325,7 +471,7 @@
       const file = document.getElementById('fileInput').files[0];
       if(!file) return;
       
-      document.getElementById('loader').style.display = 'block';
+      document.getElementById('loader').style.display = 'flex';
       document.getElementById('progressBar').style.width = '30%';
       
       const reader = new FileReader();
@@ -363,13 +509,17 @@
             tr.innerHTML = `
               <td class="font-medium">${row['Receipt No.']}</td>
               <td>${row['Sales Type']}</td>
-              <td><button disabled class="clean-btn clean-btn-success">Copied</button></td>
+              <td><button disabled class="modern-btn modern-btn-accent"><i class="fas fa-check"></i> Copied</button></td>
             `;
           } else {
             tr.innerHTML = `
               <td class="font-medium">${row['Receipt No.']}</td>
               <td>${row['Sales Type']}</td>
-              <td><button onclick="copyLink('${row.link}', this)" class="clean-btn clean-btn-main">Copy</button></td>
+              <td>
+                <button onclick="copyLink('${row.link}', this)" class="modern-btn modern-btn-primary">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+              </td>
             `;
           }
           tbody.appendChild(tr);
@@ -381,7 +531,7 @@
       
       // Update results count
       const linkCount = currentData.filter(r => r.link).length;
-      document.getElementById('resultsCount').textContent = `${linkCount} links generated`;
+      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-link mr-1 text-purple-500"></i> ${linkCount} links generated`;
     }
 
     function clearData(){
@@ -389,7 +539,7 @@
       document.querySelector("#linkTable tbody").innerHTML = '';
       document.getElementById('copyAllBtn').disabled = true;
       document.getElementById('exportBtn').disabled = true;
-      document.getElementById('resultsCount').textContent = '0 links generated';
+      document.getElementById('resultsCount').innerHTML = '<i class="fas fa-link mr-1 text-purple-500"></i> 0 links generated';
       document.getElementById('fileName').textContent = '';
       document.getElementById('fileInput').value = '';
       document.getElementById('generateBtn').disabled = true;
@@ -399,9 +549,9 @@
       navigator.clipboard.writeText(link).then(() => {
         copiedLinks.add(link);
         localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
-        btn.textContent = "Copied";
-        btn.classList.remove('clean-btn-main');
-        btn.classList.add('clean-btn-success');
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+        btn.classList.remove('modern-btn-primary');
+        btn.classList.add('modern-btn-accent');
         btn.disabled = true;
         btn.closest('tr').classList.add('copied');
       });
@@ -416,10 +566,10 @@
         renderTable();
         
         // Show success message
-        const originalText = document.getElementById('copyAllBtn').textContent;
-        document.getElementById('copyAllBtn').textContent = "All Copied!";
+        const originalText = document.getElementById('copyAllBtn').innerHTML;
+        document.getElementById('copyAllBtn').innerHTML = '<i class="fas fa-check"></i> All Copied!';
         setTimeout(() => {
-          document.getElementById('copyAllBtn').textContent = originalText;
+          document.getElementById('copyAllBtn').innerHTML = originalText;
         }, 2000);
       });
     }
@@ -435,10 +585,10 @@
       a.click();
       
       // Show success message
-      const originalText = document.getElementById('exportBtn').textContent;
-      document.getElementById('exportBtn').textContent = "Exported!";
+      const originalText = document.getElementById('exportBtn').innerHTML;
+      document.getElementById('exportBtn').innerHTML = '<i class="fas fa-check"></i> Exported!';
       setTimeout(() => {
-        document.getElementById('exportBtn').textContent = originalText;
+        document.getElementById('exportBtn').innerHTML = originalText;
       }, 2000);
     }
 
@@ -493,5 +643,3 @@
   </script>
 </body>
 </html>
-
-
