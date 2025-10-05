@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* Your existing CSS styles remain the same */
     :root {
       --primary: #8B5FBF;
       --primary-dark: #6B46C1;
@@ -16,6 +17,8 @@
       --dark-text: #2D3748;
       --light-text: #718096;
       --card-bg: rgba(255, 255, 255, 0.9);
+      --error: #EF4444;
+      --warning: #F59E0B;
     }
     
     body {
@@ -26,7 +29,7 @@
       min-height: 100vh;
     }
 
-    /* Modern container styling */
+    /* All your existing CSS styles remain unchanged */
     .modern-panel {
       background: var(--card-bg);
       backdrop-filter: blur(10px);
@@ -43,7 +46,6 @@
       transform: translateY(-3px);
     }
 
-    /* Modern button styling */
     .modern-btn {
       padding: 0.75rem 1.5rem;
       border-radius: 12px;
@@ -90,8 +92,16 @@
       background: #05BF85;
       box-shadow: 0 6px 12px rgba(6, 214, 160, 0.3);
     }
+    
+    .modern-btn-error {
+      background: var(--error);
+      color: #fff;
+    }
+    .modern-btn-error:hover {
+      background: #DC2626;
+      box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
+    }
 
-    /* Input styling */
     .modern-input {
       font-family: 'Segoe UI', system-ui, sans-serif;
       border: 1px solid #D1D5DB;
@@ -108,7 +118,6 @@
       box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    /* Modern table styling */
     .modern-table {
       width: 100%;
       border-collapse: collapse;
@@ -144,8 +153,11 @@
     .modern-table tr.copied {
       background: rgba(6, 214, 160, 0.1);
     }
+    
+    .modern-table tr.error {
+      background: rgba(239, 68, 68, 0.05);
+    }
 
-    /* Loader animation */
     #loader {
       display: none;
       text-align: center;
@@ -155,7 +167,6 @@
       color: var(--light-text);
     }
     
-    /* Progress bar */
     .progress-container {
       width: 100%;
       height: 8px;
@@ -173,7 +184,6 @@
       border-radius: 4px;
     }
     
-    /* Header styling */
     .modern-header {
       text-align: center;
       margin-bottom: 2rem;
@@ -208,7 +218,6 @@
       opacity: 0.9;
     }
     
-    /* Footer styling */
     .modern-footer {
       text-align: center;
       margin-top: 2rem;
@@ -218,7 +227,6 @@
       border-top: 1px solid #E2E8F0;
     }
     
-    /* Status message */
     .status-message {
       padding: 1rem 1.25rem;
       border-radius: 12px;
@@ -235,7 +243,18 @@
       border-left: 4px solid var(--primary);
     }
     
-    /* File upload area */
+    .status-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+      border-left: 4px solid var(--warning);
+    }
+    
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border-left: 4px solid var(--error);
+    }
+    
     .file-upload {
       border: 2px dashed #D1D5DB;
       border-radius: 16px;
@@ -257,7 +276,6 @@
       box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.1);
     }
     
-    /* Card layout for store info */
     .info-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -299,7 +317,19 @@
       font-size: 0.9rem;
     }
     
-    /* Responsive adjustments */
+    .error-message {
+      color: var(--error);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
     @media (max-width: 768px) {
       .modern-header h1 {
         font-size: 2rem;
@@ -370,6 +400,10 @@
           <i class="fas fa-folder-open"></i> Select File
         </button>
         <p id="fileName" class="text-sm text-gray-500 mt-2"></p>
+        <div id="fileError" class="error-message hidden">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span id="fileErrorText"></span>
+        </div>
       </div>
       
       <div class="progress-container">
@@ -395,6 +429,11 @@
         <i class="fas fa-spinner fa-spin text-purple-500"></i>
         <span>Processing file and generating links...</span>
       </div>
+      
+      <div id="processingError" class="status-message status-error hidden">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div id="processingErrorText"></div>
+      </div>
     </div>
 
     <!-- Results Panel -->
@@ -414,6 +453,7 @@
             <tr>
               <th>Receipt No.</th>
               <th>Sales Type</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -439,6 +479,17 @@
     document.getElementById('fileInput').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
+        // Validate file type
+        const validTypes = ['.xlsx', '.xls'];
+        const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+        
+        if (!validTypes.includes(fileExt)) {
+          showFileError('Please select a valid Excel file (.xlsx or .xls)');
+          document.getElementById('generateBtn').disabled = true;
+          return;
+        }
+        
+        hideFileError();
         document.getElementById('fileName').textContent = `Selected: ${file.name}`;
         document.getElementById('generateBtn').disabled = false;
       }
@@ -461,39 +512,103 @@
       fileUploadArea.classList.remove('dragover');
       const files = e.dataTransfer.files;
       if (files.length > 0) {
+        const file = files[0];
+        const validTypes = ['.xlsx', '.xls'];
+        const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+        
+        if (!validTypes.includes(fileExt)) {
+          showFileError('Please select a valid Excel file (.xlsx or .xls)');
+          document.getElementById('generateBtn').disabled = true;
+          return;
+        }
+        
+        hideFileError();
         document.getElementById('fileInput').files = files;
-        document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
+        document.getElementById('fileName').textContent = `Selected: ${file.name}`;
         document.getElementById('generateBtn').disabled = false;
       }
     });
+
+    function showFileError(message) {
+      document.getElementById('fileErrorText').textContent = message;
+      document.getElementById('fileError').classList.remove('hidden');
+    }
+    
+    function hideFileError() {
+      document.getElementById('fileError').classList.add('hidden');
+    }
+    
+    function showProcessingError(message) {
+      document.getElementById('processingErrorText').textContent = message;
+      document.getElementById('processingError').classList.remove('hidden');
+    }
+    
+    function hideProcessingError() {
+      document.getElementById('processingError').classList.add('hidden');
+    }
 
     function processFile(){
       const file = document.getElementById('fileInput').files[0];
       if(!file) return;
       
       document.getElementById('loader').style.display = 'flex';
-      document.getElementById('progressBar').style.width = '30%';
+      document.getElementById('progressBar').style.width = '10%';
+      hideProcessingError();
       
       const reader = new FileReader();
       reader.onload = function(e) {
-        document.getElementById('progressBar').style.width = '60%';
+        document.getElementById('progressBar').style.width = '30%';
         
-        const data = new Uint8Array(e.target.result);
-        const wb = XLSX.read(data, {type: 'array'});
-        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-        
-        document.getElementById('progressBar').style.width = '90%';
-        
-        currentData = rows.map(r => ({...r, link: generateSurveyLink(r)}));
-        renderTable();
-        
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('progressBar').style.width = '100%';
-        
-        setTimeout(() => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, {type: 'array'});
+          
+          // Check if there are sheets
+          if (!wb.SheetNames || wb.SheetNames.length === 0) {
+            throw new Error('No sheets found in the Excel file');
+          }
+          
+          document.getElementById('progressBar').style.width = '60%';
+          
+          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+          
+          // Check if there are rows
+          if (!rows || rows.length === 0) {
+            throw new Error('No data found in the Excel sheet');
+          }
+          
+          document.getElementById('progressBar').style.width = '90%';
+          
+          currentData = rows.map(r => {
+            try {
+              const link = generateSurveyLink(r);
+              return {...r, link, error: link ? null : 'Could not generate link'};
+            } catch (err) {
+              return {...r, link: null, error: err.message};
+            }
+          });
+          
+          renderTable();
+          
+          document.getElementById('loader').style.display = 'none';
+          document.getElementById('progressBar').style.width = '100%';
+          
+          setTimeout(() => {
+            document.getElementById('progressBar').style.width = '0%';
+          }, 1000);
+        } catch (error) {
+          document.getElementById('loader').style.display = 'none';
           document.getElementById('progressBar').style.width = '0%';
-        }, 1000);
+          showProcessingError(`Error processing file: ${error.message}`);
+        }
       };
+      
+      reader.onerror = function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('progressBar').style.width = '0%';
+        showProcessingError('Error reading file. Please try again.');
+      };
+      
       reader.readAsArrayBuffer(file);
     }
 
@@ -501,20 +616,38 @@
       const tbody = document.querySelector("#linkTable tbody");
       tbody.innerHTML = '';
       
+      let validLinks = 0;
+      
       currentData.forEach(row => {
-        if(row.link){
-          const tr = document.createElement('tr');
+        const tr = document.createElement('tr');
+        
+        if (row.error) {
+          tr.classList.add("error");
+          tr.innerHTML = `
+            <td class="font-medium">${row['Receipt No.'] || 'N/A'}</td>
+            <td>${row['Sales Type'] || 'N/A'}</td>
+            <td class="text-red-500 font-medium">Error</td>
+            <td>
+              <button disabled class="modern-btn modern-btn-error">
+                <i class="fas fa-exclamation-triangle"></i> Error
+              </button>
+            </td>
+          `;
+        } else if(row.link){
+          validLinks++;
           if(copiedLinks.has(row.link)){
             tr.classList.add("copied");
             tr.innerHTML = `
               <td class="font-medium">${row['Receipt No.']}</td>
               <td>${row['Sales Type']}</td>
+              <td class="text-green-500 font-medium">Copied</td>
               <td><button disabled class="modern-btn modern-btn-accent"><i class="fas fa-check"></i> Copied</button></td>
             `;
           } else {
             tr.innerHTML = `
               <td class="font-medium">${row['Receipt No.']}</td>
               <td>${row['Sales Type']}</td>
+              <td class="text-blue-500 font-medium">Ready</td>
               <td>
                 <button onclick="copyLink('${row.link}', this)" class="modern-btn modern-btn-primary">
                   <i class="fas fa-copy"></i> Copy
@@ -522,16 +655,27 @@
               </td>
             `;
           }
-          tbody.appendChild(tr);
+        } else {
+          tr.classList.add("error");
+          tr.innerHTML = `
+            <td class="font-medium">${row['Receipt No.'] || 'N/A'}</td>
+            <td>${row['Sales Type'] || 'N/A'}</td>
+            <td class="text-red-500 font-medium">Invalid Data</td>
+            <td>
+              <button disabled class="modern-btn modern-btn-error">
+                <i class="fas fa-exclamation-triangle"></i> Error
+              </button>
+            </td>
+          `;
         }
+        tbody.appendChild(tr);
       });
       
-      document.getElementById('copyAllBtn').disabled = false;
-      document.getElementById('exportBtn').disabled = false;
+      document.getElementById('copyAllBtn').disabled = validLinks === 0;
+      document.getElementById('exportBtn').disabled = validLinks === 0;
       
       // Update results count
-      const linkCount = currentData.filter(r => r.link).length;
-      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-link mr-1 text-purple-500"></i> ${linkCount} links generated`;
+      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-link mr-1 text-purple-500"></i> ${validLinks} links generated`;
     }
 
     function clearData(){
@@ -543,6 +687,8 @@
       document.getElementById('fileName').textContent = '';
       document.getElementById('fileInput').value = '';
       document.getElementById('generateBtn').disabled = true;
+      hideFileError();
+      hideProcessingError();
     }
 
     function copyLink(link, btn){
@@ -554,14 +700,35 @@
         btn.classList.add('modern-btn-accent');
         btn.disabled = true;
         btn.closest('tr').classList.add('copied');
+        
+        // Update status column
+        const statusCell = btn.closest('tr').querySelector('td:nth-child(3)');
+        statusCell.textContent = 'Copied';
+        statusCell.className = 'text-green-500 font-medium';
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy link to clipboard. Please try again.');
       });
     }
 
     function copyAllLinks(){
-      if(currentData.length === 0) return alert("No links to copy!");
-      const allLinks = currentData.map(r => r.link).filter(Boolean).join("\n");
+      if(currentData.length === 0) {
+        alert("No links to copy!");
+        return;
+      }
+      
+      const validLinks = currentData
+        .filter(r => r.link && !r.error)
+        .map(r => r.link);
+        
+      if (validLinks.length === 0) {
+        alert("No valid links to copy!");
+        return;
+      }
+      
+      const allLinks = validLinks.join("\n");
       navigator.clipboard.writeText(allLinks).then(() => {
-        currentData.forEach(r => r.link ? copiedLinks.add(r.link) : null);
+        validLinks.forEach(link => copiedLinks.add(link));
         localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
         renderTable();
         
@@ -571,45 +738,99 @@
         setTimeout(() => {
           document.getElementById('copyAllBtn').innerHTML = originalText;
         }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy all links: ', err);
+        alert('Failed to copy links to clipboard. Please try again.');
       });
     }
 
     function exportToCSV(){
-      let csv = "Receipt No.,Sales Type,Generated Link\n";
-      currentData.forEach(r => r.link ? csv += `${r['Receipt No.']},${r['Sales Type']},${r.link}\n` : null);
-      const blob = new Blob([csv], {type: 'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = "survey_links.csv";
-      a.click();
+      const validData = currentData.filter(r => r.link && !r.error);
       
-      // Show success message
-      const originalText = document.getElementById('exportBtn').innerHTML;
-      document.getElementById('exportBtn').innerHTML = '<i class="fas fa-check"></i> Exported!';
-      setTimeout(() => {
-        document.getElementById('exportBtn').innerHTML = originalText;
-      }, 2000);
+      if (validData.length === 0) {
+        alert("No valid links to export!");
+        return;
+      }
+      
+      let csv = "Receipt No.,Sales Type,Generated Link\n";
+      validData.forEach(r => csv += `${r['Receipt No.']},${r['Sales Type']},${r.link}\n`);
+      
+      try {
+        const blob = new Blob([csv], {type: 'text/csv'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "survey_links.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Show success message
+        const originalText = document.getElementById('exportBtn').innerHTML;
+        document.getElementById('exportBtn').innerHTML = '<i class="fas fa-check"></i> Exported!';
+        setTimeout(() => {
+          document.getElementById('exportBtn').innerHTML = originalText;
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to export CSV: ', err);
+        alert('Failed to export CSV file. Please try again.');
+      }
     }
 
     function generateSurveyLink(row){
-      const receipt = row['Receipt No.'], sales = row['Sales Type'];
+      console.log("Processing row:", row);
+      
+      // Validate required fields with better error handling
+      const requiredFields = ['Receipt No.', 'Sales Type', 'Date', 'Time', 'Sell-to Contact No.'];
+      const missingFields = requiredFields.filter(field => !row[field] && row[field] !== 0);
+      
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+      }
+      
+      const receipt = String(row['Receipt No.']).trim();
+      const sales = String(row['Sales Type']).trim().toUpperCase();
+      
+      console.log(`Receipt: ${receipt}, Sales Type: ${sales}`);
+      
       let SM = '', OI = '', OT = '';
       
-      if(receipt.startsWith('K855') && sales === 'DINE-IN') {
-        SM = '4.0'; OI = receipt.slice(-4); OT = '2';
-      } else if(receipt.startsWith('K855') && sales === 'TAKEAWAY') {
-        SM = '4.0'; OI = receipt.slice(-4); OT = '1';
+      // Fix: Handle different case variations of sales types
+      if(receipt.startsWith('50') && (sales === 'DINE-IN' || sales === 'DINE IN')) {
+        SM = '4.0'; 
+        OI = receipt.length >= 4 ? receipt.slice(-4) : receipt;
+        OT = '2';
+        console.log(`DINE-IN: SM=${SM}, OI=${OI}, OT=${OT}`);
+      } else if(receipt.startsWith('50') && sales === 'TAKEAWAY') {
+        SM = '4.0'; 
+        OI = receipt.length >= 4 ? receipt.slice(-4) : receipt;
+        OT = '1';
+        console.log(`TAKEAWAY: SM=${SM}, OI=${OI}, OT=${OT}`);
       } else if(receipt.startsWith('K855') && sales === 'DELIVERY') {
-        SM = '3.0'; OI = receipt; OT = '3';
+        SM = '3.0'; 
+        OI = receipt;
+        OT = '3';
+        console.log(`DELIVERY: SM=${SM}, OI=${OI}, OT=${OT}`);
       } else {
-        return null;
+        throw new Error(`Invalid receipt format (${receipt}) or sales type (${sales})`);
       }
       
       const D = convertExcelDate(row['Date']);
       const TM = convertExcelTime(row['Time']);
-      const PH = `91${row['Sell-to Contact No.']}`;
+      const PH = `91${String(row['Sell-to Contact No.']).trim()}`;
       const DTM = `${D}T${TM}Z`;
+      
+      console.log(`Date: ${D}, Time: ${TM}, Phone: ${PH}`);
+      
+      // Validate date and time
+      if (!D || D === "Invalid Date") {
+        throw new Error('Invalid date format');
+      }
+      
+      if (!TM || TM === "Invalid Time") {
+        throw new Error('Invalid time format');
+      }
       
       const data = {
         "S": storeID,
@@ -623,22 +844,81 @@
         "PH": PH
       };
       
-      return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
+      console.log("Final data object:", data);
+      
+      const jsonString = JSON.stringify(data);
+      const base64Data = btoa(unescape(encodeURIComponent(jsonString)));
+      
+      return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${base64Data}`;
     }
 
     function convertExcelDate(serial){
-      if(!serial || isNaN(serial)) return "";
-      const date = new Date((serial - 25569) * 86400 * 1000);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      if (!serial) return "Invalid Date";
+      
+      // Handle string dates (if already in YYYY-MM-DD format)
+      if (typeof serial === 'string') {
+        // Try to parse as ISO date
+        if (/^\d{4}-\d{2}-\d{2}$/.test(serial)) {
+          return serial;
+        }
+        
+        // Try to parse other date formats
+        const date = new Date(serial);
+        if (!isNaN(date.getTime())) {
+          return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+      }
+      
+      // Handle Excel serial numbers
+      if (!isNaN(serial)) {
+        // Excel dates are based on 1900-01-01 (with 1900 incorrectly treated as a leap year)
+        const excelEpoch = new Date(1900, 0, 1);
+        // Adjust for Excel's leap year bug (they treated 1900 as a leap year)
+        const days = serial - (serial > 60 ? 2 : 1);
+        const date = new Date(excelEpoch.getTime() + days * 86400 * 1000);
+        
+        // Check if date is valid
+        if (isNaN(date.getTime())) return "Invalid Date";
+        
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      }
+      
+      return "Invalid Date";
     }
 
     function convertExcelTime(serial){
-      if(!serial || isNaN(serial)) return "";
-      const totalMs = Math.round(serial * 24 * 60 * 60 * 1000);
-      const h = String(Math.floor(totalMs / (60 * 60 * 1000))).padStart(2, '0');
-      const m = String(Math.floor((totalMs % (60 * 60 * 1000)) / (60 * 1000))).padStart(2, '0');
-      const s = String(Math.floor((totalMs % (60 * 1000)) / 1000)).padStart(2, '0');
-      return `${h}:${m}:${s}`;
+      if (!serial) return "Invalid Time";
+      
+      // Handle string times (if already in HH:MM:SS format)
+      if (typeof serial === 'string') {
+        // Handle HH:MM:SS format
+        if (/^\d{1,2}:\d{2}:\d{2}$/.test(serial)) {
+          return serial;
+        }
+        
+        // Handle HH:MM format
+        if (/^\d{1,2}:\d{2}$/.test(serial)) {
+          const parts = serial.split(':');
+          return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}:00`;
+        }
+        
+        // Try to parse as a time string
+        const date = new Date(`1970-01-01T${serial}Z`);
+        if (!isNaN(date.getTime())) {
+          return `${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}:${String(date.getUTCSeconds()).padStart(2, '0')}`;
+        }
+      }
+      
+      // Handle Excel time serial numbers (fraction of a day)
+      if (!isNaN(serial)) {
+        const totalSeconds = Math.round(serial * 24 * 60 * 60);
+        const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+        const seconds = String(totalSeconds % 60).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+      }
+      
+      return "Invalid Time";
     }
   </script>
 </body>
