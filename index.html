@@ -218,7 +218,7 @@
   <script>
     let currentData = [];
     let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]"));
-    const storeID = "91KDIPL879-01";
+    const storeID = "91KDIPL1067-01";
 
     // Initialize event listeners
     document.addEventListener('DOMContentLoaded', function() {
@@ -521,11 +521,11 @@
       
       let SM = '', OI = '', OT = '';
       
-      if (receipt.startsWith('K281') && sales === 'TAKEAWAY') {
+      if (receipt.startsWith('50') && sales === 'TAKEAWAY') {
         SM = '4.0'; OI = receipt.slice(-4); OT = '2';
-      } else if (receipt.startsWith('K281') && sales === 'DINE-IN') {
+      } else if (receipt.startsWith('50') && sales === 'DINE-IN') {
         SM = '4.0'; OI = receipt.slice(-4); OT = '1';
-      } else if (receipt.startsWith('K281') && sales === 'DELIVERY') {
+      } else if (receipt.startsWith('K855') && sales === 'DELIVERY') {
         SM = '3.0'; OI = receipt; OT = '3';
       } else {
         return null;
