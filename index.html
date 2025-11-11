@@ -6,14 +6,10 @@
 <title>Survey Link Generator</title>
 <style>
     body {
-        font-family: 'Comic Sans MS', 'Marker Felt', 'Arial Rounded MT Bold', sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 20px;
-        background-color: #e6f2ff;
-        background-image: radial-gradient(#b3d9ff 15%, transparent 16%),
-                          radial-gradient(#b3d9ff 15%, transparent 16%);
-        background-size: 40px 40px;
-        background-position: 0 0, 20px 20px;
+        background-color: #f5f7fa;
         color: #333;
     }
     .container {
@@ -21,85 +17,22 @@
         margin: 0 auto;
         background: white;
         padding: 25px;
-        border-radius: 15px;
-        box-shadow: 8px 8px 0 #333, 15px 15px 0 #ffcc00;
-        border: 4px solid #333;
-        position: relative;
-        overflow: hidden;
-    }
-    .container:before {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        border: 3px dashed #ff6600;
-        border-radius: 20px;
-        pointer-events: none;
-        z-index: -1;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     h1 {
         text-align: center;
-        font-size: 36px;
         margin-bottom: 25px;
-        color: #ff3300;
-        text-shadow: 3px 3px 0 #ffcc00, 6px 6px 0 rgba(0,0,0,0.2);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        position: relative;
-        display: inline-block;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 10px 30px;
-        background: white;
-        border: 4px solid #333;
-        border-radius: 15px;
-        box-shadow: 5px 5px 0 #333;
-    }
-    h1:after {
-        content: "!!!";
-        position: absolute;
-        top: -20px;
-        right: -20px;
-        background: #ffcc00;
-        color: #ff3300;
-        font-size: 24px;
-        padding: 5px 10px;
-        border-radius: 50%;
-        border: 3px solid #333;
-        transform: rotate(15deg);
-        animation: bounce 1s infinite alternate;
-    }
-    @keyframes bounce {
-        from { transform: rotate(15deg) scale(1); }
-        to { transform: rotate(15deg) scale(1.1); }
+        color: #2c3e50;
+        font-weight: 600;
     }
     .file-section {
         text-align: center;
         margin: 25px 0;
         padding: 25px;
-        border: 4px dashed #ff6600;
-        border-radius: 15px;
-        background-color: #fff9e6;
-        position: relative;
-        min-height: 120px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    .file-section:before {
-        content: "📁";
-        position: absolute;
-        top: -20px;
-        left: 20px;
-        font-size: 40px;
-        background: white;
-        padding: 5px;
-        border: 3px solid #333;
+        border: 2px dashed #3498db;
         border-radius: 10px;
-        transform: rotate(-10deg);
+        background-color: #f8fafc;
     }
     .file-input-container {
         display: flex;
@@ -108,33 +41,31 @@
         gap: 15px;
         width: 100%;
         max-width: 400px;
+        margin: 0 auto;
     }
     .file-label {
         font-weight: bold;
-        font-size: 18px;
-        color: #333;
-        background: #ffcc00;
-        padding: 8px 15px;
-        border-radius: 8px;
-        border: 2px solid #333;
-        box-shadow: 3px 3px 0 #333;
+        font-size: 16px;
+        color: white;
+        background: #3498db;
+        padding: 10px 20px;
+        border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s;
     }
     .file-label:hover {
-        transform: translateY(-2px);
-        box-shadow: 4px 4px 0 #333;
+        background: #2980b9;
     }
     input[type="file"] {
         display: none;
     }
     .file-name {
-        font-size: 16px;
+        font-size: 14px;
         color: #666;
         background: white;
         padding: 8px 15px;
-        border-radius: 8px;
-        border: 2px solid #3399ff;
+        border-radius: 6px;
+        border: 1px solid #ddd;
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -148,234 +79,128 @@
         flex-wrap: wrap;
     }
     .btn {
-        padding: 12px 25px;
-        border: 3px solid #333;
-        border-radius: 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
         cursor: pointer;
-        font-size: 18px;
-        font-weight: bold;
-        font-family: 'Comic Sans MS', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
         transition: all 0.2s;
-        position: relative;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        box-shadow: 4px 4px 0 #333;
-    }
-    .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 6px 6px 0 #333;
-    }
-    .btn:active {
-        transform: translateY(1px);
-        box-shadow: 2px 2px 0 #333;
     }
     .btn-primary { 
-        background-color: #3399ff; 
+        background-color: #3498db; 
         color: white; 
     }
     .btn-primary:hover { 
-        background-color: #0077e6; 
+        background-color: #2980b9; 
     }
     .btn-success { 
-        background-color: #33cc33; 
+        background-color: #27ae60; 
         color: white; 
     }
     .btn-success:hover { 
-        background-color: #29a329; 
+        background-color: #219653; 
     }
     .btn-warning { 
-        background-color: #ffcc00; 
-        color: #333; 
+        background-color: #e67e22; 
+        color: white; 
     }
     .btn-warning:hover { 
-        background-color: #e6b800; 
+        background-color: #d35400; 
     }
     .btn:disabled { 
-        background-color: #cccccc; 
-        color: #999;
+        background-color: #bdc3c7; 
+        color: #7f8c8d;
         cursor: not-allowed; 
-        box-shadow: 2px 2px 0 #999;
-        border-color: #999;
-    }
-    .btn:disabled:hover {
-        transform: none;
-        box-shadow: 2px 2px 0 #999;
     }
     table {
         width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
+        border-collapse: collapse;
         margin-top: 25px;
-        border: 4px solid #333;
-        border-radius: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 5px 5px 0 #333;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         background: white;
     }
     th, td {
-        border-bottom: 3px solid #333;
-        border-right: 3px solid #333;
+        border-bottom: 1px solid #ddd;
         padding: 12px;
         text-align: left;
-        vertical-align: middle;
     }
     th {
-        background-color: #ff6600;
+        background-color: #34495e;
         color: white;
-        position: sticky;
-        top: 0;
-        font-size: 18px;
-        text-transform: uppercase;
-        text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-    }
-    th:last-child, td:last-child {
-        border-right: none;
-    }
-    tr:last-child td {
-        border-bottom: none;
+        font-weight: 600;
     }
     tr:nth-child(even) { 
-        background-color: #fff0e6; 
-    }
-    tr:nth-child(odd) { 
-        background-color: white; 
+        background-color: #f8f9fa; 
     }
     .copy-btn {
-        background-color: #33cc99;
+        background-color: #2ecc71;
         color: white;
-        border: 2px solid #333;
-        padding: 8px 15px;
-        border-radius: 8px;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
         cursor: pointer;
         font-size: 14px;
-        font-weight: bold;
-        font-family: 'Comic Sans MS', sans-serif;
-        white-space: nowrap;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 2px 2px 0 #333;
+        font-weight: 500;
         transition: all 0.2s;
     }
     .copy-btn:hover { 
-        background-color: #29a37a; 
-        transform: translateY(-2px);
-        box-shadow: 3px 3px 0 #333;
-    }
-    .copy-btn:active {
-        transform: translateY(1px);
-        box-shadow: 1px 1px 0 #333;
+        background-color: #27ae60; 
     }
     .copy-btn.copied {
-        background-color: #ff3333 !important;
+        background-color: #e74c3c;
         cursor: not-allowed;
-        animation: wiggle 0.5s;
     }
     .copy-btn:disabled {
-        background-color: #999999 !important;
-        color: #666;
+        background-color: #95a5a6;
         cursor: not-allowed;
-        box-shadow: 1px 1px 0 #666;
-        border-color: #666;
-        transform: none;
-    }
-    @keyframes wiggle {
-        0%, 100% { transform: rotate(0); }
-        25% { transform: rotate(-5deg); }
-        75% { transform: rotate(5deg); }
-    }
-    /* Hide Survey Model and Generated Link columns visually */
-    th:nth-child(3), td:nth-child(3),
-    th:nth-child(4), td:nth-child(4) {
-        display: none;
     }
     .status {
         text-align: center;
         margin: 25px 0;
         padding: 15px;
-        border-radius: 10px;
-        border: 3px solid;
-        font-weight: bold;
-        font-size: 18px;
-        box-shadow: 3px 3px 0 #333;
+        border-radius: 6px;
+        font-weight: 500;
     }
     .status.success { 
-        background-color: #ccffcc; 
-        color: #006600; 
-        border-color: #33cc33;
+        background-color: #d5f4e6; 
+        color: #27ae60; 
+        border: 1px solid #2ecc71;
     }
     .status.error { 
-        background-color: #ffcccc; 
-        color: #cc0000; 
-        border-color: #ff3333;
+        background-color: #fadbd8; 
+        color: #c0392b; 
+        border: 1px solid #e74c3c;
+    }
+    .status.info { 
+        background-color: #d6eaf8; 
+        color: #2980b9; 
+        border: 1px solid #3498db;
     }
     .table-container {
         max-height: 600px;
         overflow-y: auto;
-        border: 4px solid #333;
-        border-radius: 15px;
-        box-shadow: 5px 5px 0 #333;
-        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
     }
-    .comic-dots {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        background: #ffcc00;
-        border: 3px solid #333;
-        border-radius: 50%;
+    .summary {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #3498db;
     }
-    .dot-1 { top: 20px; left: 20px; }
-    .dot-2 { top: 20px; right: 20px; }
-    .dot-3 { bottom: 20px; left: 20px; }
-    .dot-4 { bottom: 20px; right: 20px; }
-    .speech-bubble {
-        position: absolute;
-        bottom: -40px;
-        right: 30px;
-        background: white;
-        border: 3px solid #333;
-        border-radius: 20px;
-        padding: 10px 15px;
-        font-weight: bold;
-        box-shadow: 3px 3px 0 #333;
-        transform: rotate(-5deg);
-        animation: float 3s infinite ease-in-out;
-    }
-    .speech-bubble:after {
-        content: "";
-        position: absolute;
-        bottom: -15px;
-        right: 30px;
-        border-width: 15px 10px 0;
-        border-style: solid;
-        border-color: white transparent;
-        display: block;
-        width: 0;
-    }
-    .speech-bubble:before {
-        content: "";
-        position: absolute;
-        bottom: -18px;
-        right: 29px;
-        border-width: 16px 11px 0;
-        border-style: solid;
-        border-color: #333 transparent;
-        display: block;
-        width: 0;
-    }
-    @keyframes float {
-        0%, 100% { transform: rotate(-5deg) translateY(0); }
-        50% { transform: rotate(-5deg) translateY(-5px); }
-    }
-
+    
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .container {
             padding: 15px;
         }
         h1 {
-            font-size: 28px;
-            padding: 8px 20px;
+            font-size: 24px;
         }
         .file-section {
             padding: 20px 15px;
@@ -399,16 +224,11 @@
 </head>
 <body>
 <div class="container">
-    <div class="comic-dots dot-1"></div>
-    <div class="comic-dots dot-2"></div>
-    <div class="comic-dots dot-3"></div>
-    <div class="comic-dots dot-4"></div>
-    
-    <h1>Survey Link Generator</h1>
+    <h1>Muhammad Ali</h1>
     
     <div class="file-section">
         <div class="file-input-container">
-            <label for="fileInput" class="file-label">📁 CHOOSE EXCEL FILE</label>
+            <label for="fileInput" class="file-label">📁 Choose Excel File</label>
             <input type="file" id="fileInput" accept=".xlsx, .xls">
             <div class="file-name" id="fileName">No file chosen</div>
         </div>
@@ -420,10 +240,11 @@
     
     <div id="status" class="status" style="display: none;"></div>
     
+    <div class="summary" id="summary" style="display: none;"></div>
+    
     <div class="button-group">
         <button class="btn btn-success" id="copyAllBtn" onclick="copyAllLinks()" disabled>Copy All Links</button>
         <button class="btn btn-primary" onclick="exportToCSV()" id="exportBtn" disabled>Export to CSV</button>
-        <div class="speech-bubble">Click me!</div>
     </div>
     
     <div class="table-container">
@@ -432,8 +253,6 @@
                 <tr>
                     <th>Receipt No.</th>
                     <th>Sales Type</th>
-                    <th>Survey Model</th>
-                    <th>Generated Link</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -445,15 +264,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 let currentData = [];
-const storeID = "91KDIPL1067-01"; // Store Code
+const storeID = "91KDIPL1067-01";
 
-// Updated generateSurveyLink function
+// Helper function to get value from row with multiple possible column names
+function getRowValue(row, possibleKeys) {
+    for (const key of possibleKeys) {
+        if (row[key] !== undefined && row[key] !== null && row[key] !== '') {
+            return row[key];
+        }
+    }
+    return null;
+}
+
+// Generate survey link based on row data
 function generateSurveyLink(row) {
-    const receiptNo = row['Receipt No.'] || row['Receipt No'] || row['ReceiptNo'];
-    const salesType = row['Sales Type'] || row['SalesType'];
+    const receiptNo = getRowValue(row, ['Receipt No.', 'Receipt No', 'ReceiptNo']);
+    const salesType = getRowValue(row, ['Sales Type', 'SalesType']);
+    const posReceipt = getRowValue(row, ['POS Receipt No.', 'POS Receipt No', 'POSReceiptNo']);
     
     if (!receiptNo || !salesType) {
-        console.log('Missing receiptNo or salesType:', {receiptNo, salesType});
+        return null;
+    }
+
+    // Skip if POS receipt matches exclusion patterns
+    if (posReceipt && /K855SWG|K855ZMT|K855MAGIC/i.test(posReceipt)) {
         return null;
     }
 
@@ -486,28 +320,25 @@ function generateSurveyLink(row) {
         numericOT = '3'; 
     }
     else if (receiptNo.startsWith('K855') && salesType === 'DELIVERY') {
-        // Handle K855 receipts for delivery
         surveyModel = '3.0'; 
         orderID = receiptNo; 
         numericOT = '3'; 
     }
     else { 
-        console.log('No matching pattern for:', {receiptNo, salesType});
         return null; 
     }
 
-    // Get date and time - handle different possible column names
-    const rawDate = row['Date'] || row['Transaction Date'] || '';
-    const rawTime = row['Time'] || row['Transaction Time'] || '';
+    // Get date and time
+    const rawDate = getRowValue(row, ['Date', 'Transaction Date']);
+    const rawTime = getRowValue(row, ['Time', 'Transaction Time']);
     
     let date = '', time = '', isoDateTime = '';
     
-    // Parse date (already in YYYY-MM-DD format)
+    // Parse date
     if (rawDate) {
-        if (typeof rawDate === 'string' && rawDate.includes('-')) {
-            date = rawDate.split(' ')[0]; // Get just the date part
+        if (typeof rawDate === 'string') {
+            date = rawDate.split(' ')[0];
         } else {
-            // If it's an Excel serial number, convert it
             date = convertExcelDate(rawDate);
         }
     }
@@ -515,9 +346,8 @@ function generateSurveyLink(row) {
     // Parse time
     if (rawTime) {
         if (typeof rawTime === 'string') {
-            time = rawTime.split('.')[0]; // Remove milliseconds if present
+            time = rawTime.split('.')[0];
         } else {
-            // If it's an Excel serial number, convert it
             time = convertExcelTime(rawTime);
         }
     }
@@ -527,14 +357,9 @@ function generateSurveyLink(row) {
         isoDateTime = `${date}T${time}Z`;
     }
 
-    // Get phone number - handle different possible column names
-    const phoneRaw = row['Sell-to Contact No.'] || row['Sell-to Contact No'] || row['ContactNo'] || '';
+    // Get phone number
+    const phoneRaw = getRowValue(row, ['Sell-to Contact No.', 'Sell-to Contact No', 'ContactNo']);
     const phoneNumber = phoneRaw ? `91${phoneRaw}` : '';
-
-    console.log('Generating link with:', {
-        receiptNo, salesType, surveyModel, orderID, numericOT,
-        date, time, phoneNumber
-    });
 
     const data = { 
         "S": storeID, 
@@ -552,7 +377,7 @@ function generateSurveyLink(row) {
     return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${encodedData}`;
 }
 
-// Excel date/time converters (keep these as fallback)
+// Excel date/time converters
 function convertExcelDate(serial) {
     const date = new Date((serial - 25569) * 86400 * 1000);
     return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
@@ -566,11 +391,11 @@ function convertExcelTime(serial) {
     return `${hours}:${minutes}:${seconds}`;
 }
 
-// Updated file processing function
+// File processing
 function processFile() {
     const file = document.getElementById('fileInput').files[0];
     if (!file) return showStatus('Please select a file first', 'error');
-    showStatus('Processing file...', 'success');
+    showStatus('Processing file...', 'info');
 
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -579,22 +404,37 @@ function processFile() {
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
             
-            // Get all data including headers to debug
-            const allData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-            console.log('Raw data headers:', allData[0]);
-            console.log('First few rows:', allData.slice(1, 5));
+            // Get the range of the worksheet
+            const range = XLSX.utils.decode_range(worksheet['!ref']);
+            
+            // Find the header row
+            let headerRowIndex = -1;
+            let dataStartRow = -1;
+            
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                const cellAddress = XLSX.utils.encode_cell({c: 0, r: R});
+                const cell = worksheet[cellAddress];
+                if (cell && cell.v === "Transaction No.") {
+                    headerRowIndex = R;
+                    dataStartRow = R + 1;
+                    break;
+                }
+            }
+            
+            if (headerRowIndex === -1) {
+                headerRowIndex = 2;
+                dataStartRow = 3;
+            }
+            
+            // Set the range to read from the header row onwards
+            const newRange = XLSX.utils.encode_range({
+                s: {c: range.s.c, r: headerRowIndex},
+                e: {c: range.e.c, r: range.e.r}
+            });
+            worksheet['!ref'] = newRange;
             
             // Convert to objects
             const sheetData = XLSX.utils.sheet_to_json(worksheet);
-            console.log('Processed data sample:', sheetData.slice(0, 3));
-            
-            // Filter out rows with specific POS receipt patterns
-            const filteredData = sheetData.filter(row => {
-                const posReceipt = row['POS Receipt No.'] || row['POS Receipt No'] || row['POSReceiptNo'] || '';
-                return !posReceipt.match(/K855SWG|K855ZMT|K855MAGIC/);
-            });
-
-            console.log('Filtered data count:', filteredData.length);
             
             currentData = [];
             const tbody = document.querySelector('#linkTable tbody');
@@ -602,16 +442,23 @@ function processFile() {
 
             let processedCount = 0;
             let errorCount = 0;
+            let filteredCount = 0;
             
-            filteredData.forEach((row, index) => {
+            sheetData.forEach((row, index) => {
                 try {
+                    // Check if row should be filtered out
+                    const posReceipt = getRowValue(row, ['POS Receipt No.', 'POS Receipt No', 'POSReceiptNo']);
+                    if (posReceipt && /K855SWG|K855ZMT|K855MAGIC/i.test(posReceipt)) {
+                        filteredCount++;
+                        return;
+                    }
+                    
                     const link = generateSurveyLink(row);
                     if (link) {
                         processedCount++;
                         const linkData = {
-                            receiptNo: row['Receipt No.'] || row['Receipt No'] || row['ReceiptNo'],
-                            salesType: row['Sales Type'] || row['SalesType'],
-                            surveyModel: link.includes('SM=6.0') ? '6.0' : link.includes('SM=4.0') ? '4.0' : link.includes('SM=3.0') ? '3.0' : 'Unknown',
+                            receiptNo: getRowValue(row, ['Receipt No.', 'Receipt No', 'ReceiptNo']),
+                            salesType: getRowValue(row, ['Sales Type', 'SalesType']),
                             link: link,
                             copied: false
                         };
@@ -621,18 +468,14 @@ function processFile() {
                         tr.innerHTML = `
                             <td>${linkData.receiptNo}</td>
                             <td>${linkData.salesType}</td>
-                            <td>${linkData.surveyModel}</td>
-                            <td>${linkData.link}</td>
-                            <td><button class="copy-btn" data-index="${currentData.length - 1}">Copy</button></td>
+                            <td><button class="copy-btn" data-index="${currentData.length - 1}">Copy Link</button></td>
                         `;
                         tbody.appendChild(tr);
                     } else {
                         errorCount++;
-                        console.log('Failed to generate link for row:', row);
                     }
                 } catch (err) {
                     errorCount++;
-                    console.error('Error processing row:', row, err);
                 }
             });
 
@@ -644,18 +487,19 @@ function processFile() {
                 });
             });
 
-            let statusMessage = `Processed ${processedCount} records`;
-            if (errorCount > 0) {
-                statusMessage += `, ${errorCount} errors`;
-            }
-            showStatus(statusMessage, processedCount > 0 ? 'success' : 'error');
+            // Update summary
+            updateSummary(processedCount, errorCount, filteredCount, sheetData.length);
             
-            document.getElementById('copyAllBtn').disabled = currentData.length === 0;
-            document.getElementById('exportBtn').disabled = currentData.length === 0;
+            if (processedCount > 0) {
+                showStatus(`Successfully generated ${processedCount} survey links`, 'success');
+                document.getElementById('copyAllBtn').disabled = false;
+                document.getElementById('exportBtn').disabled = false;
+            } else {
+                showStatus('No valid records found to generate links', 'error');
+            }
             
         } catch (err) {
-            console.error('Error processing file:', err);
-            showStatus('Error: ' + err.message, 'error');
+            showStatus('Error processing file: ' + err.message, 'error');
         }
     };
     reader.onerror = function() {
@@ -664,7 +508,150 @@ function processFile() {
     reader.readAsArrayBuffer(file);
 }
 
-// Keep all other functions the same (copyIndividualLink, copyAllLinks, exportToCSV, etc.)
+// Update summary information
+function updateSummary(processed, errors, filtered, total) {
+    const summaryEl = document.getElementById('summary');
+    summaryEl.innerHTML = `
+        <h3>Processing Summary</h3>
+        <p><strong>Total Records:</strong> ${total}</p>
+        <p><strong>Successfully Processed:</strong> ${processed}</p>
+        <p><strong>Filtered Out:</strong> ${filtered}</p>
+        <p><strong>Errors/Skipped:</strong> ${errors}</p>
+    `;
+    summaryEl.style.display = 'block';
+}
+
+// Copy individual link
+function copyIndividualLink(index, button) {
+    const linkData = currentData[index];
+    
+    if (linkData.copied) {
+        return;
+    }
+    
+    const link = linkData.link;
+    
+    // Create a temporary textarea element
+    const textArea = document.createElement("textarea");
+    textArea.value = link;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            linkData.copied = true;
+            button.textContent = 'Copied!';
+            button.classList.add('copied');
+            button.disabled = true;
+            
+            showStatus('Link copied to clipboard!', 'success');
+        } else {
+            showStatus('Failed to copy link', 'error');
+        }
+    } catch (err) {
+        showStatus('Failed to copy link', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Copy all links
+function copyAllLinks() {
+    const links = currentData.map(item => item.link).join('\n');
+    
+    // Create a temporary textarea element
+    const textArea = document.createElement("textarea");
+    textArea.value = links;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            currentData.forEach((item, index) => {
+                item.copied = true;
+            });
+            
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                button.disabled = true;
+            });
+            
+            showStatus('All links copied to clipboard!', 'success');
+        } else {
+            showStatus('Failed to copy all links', 'error');
+        }
+    } catch (err) {
+        showStatus('Failed to copy all links', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Export to CSV
+function exportToCSV() {
+    if (currentData.length === 0) return showStatus('No data to export', 'error');
+    
+    let csvContent = "Receipt No.,Sales Type,Generated Link\n";
+    currentData.forEach(row => {
+        csvContent += `"${row.receiptNo}","${row.salesType}","${row.link}"\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "survey_links.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showStatus('CSV exported successfully!', 'success');
+}
+
+// Clear all data
+function clearData() {
+    currentData = [];
+    document.querySelector('#linkTable tbody').innerHTML = '';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileName').textContent = 'No file chosen';
+    document.getElementById('copyAllBtn').disabled = true;
+    document.getElementById('exportBtn').disabled = true;
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('status').style.display = 'none';
+    document.getElementById('summary').style.display = 'none';
+}
+
+// Show status message
+function showStatus(message, type) {
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = message;
+    statusEl.className = `status ${type}`;
+    statusEl.style.display = 'block';
+    
+    if (type === 'success') {
+        setTimeout(() => {
+            statusEl.style.display = 'none';
+        }, 5000);
+    }
+}
+
+// Enable generate button when file is selected and show file name
+document.getElementById('fileInput').addEventListener('change', function() {
+    const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+    document.getElementById('fileName').textContent = fileName;
+    document.getElementById('generateBtn').disabled = !this.files.length;
+});
 </script>
 </body>
 </html>
