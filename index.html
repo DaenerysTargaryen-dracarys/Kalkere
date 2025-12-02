@@ -26,6 +26,31 @@
         color: #2c3e50;
         font-weight: 600;
     }
+    .filter-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 15px 0 25px 0;
+        gap: 10px;
+    }
+    .filter-label {
+        font-size: 16px;
+        font-weight: 500;
+        color: #2980b9;
+    }
+    .filter-select {
+        font-size: 16px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #3498db;
+        background: #ecf0f1;
+        color: #2c3e50;
+        transition: border 0.2s;
+    }
+    .filter-select:focus {
+        border-color: #2980b9;
+        outline: none;
+    }
     .file-section {
         text-align: center;
         margin: 25px 0;
@@ -205,6 +230,10 @@
         .file-section {
             padding: 20px 15px;
         }
+        .filter-container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
         .button-group {
             flex-direction: column;
             align-items: center;
@@ -225,7 +254,18 @@
 <body>
 <div class="container">
     <h1> Daenerys Targaryen("Dracarys)" </h1>
-    
+
+    <!-- FILTER ADDED HERE -->
+    <div class="filter-container">
+        <label for="salesTypeFilter" class="filter-label">Sales Type Filter:</label>
+        <select id="salesTypeFilter" class="filter-select">
+            <option value="ALL">All</option>
+            <option value="DINE-IN">DINE-IN</option>
+            <option value="TAKEAWAY">TAKEAWAY</option>
+            <option value="DELIVERY">DELIVERY</option>
+        </select>
+    </div>
+
     <div class="file-section">
         <div class="file-input-container">
             <label for="fileInput" class="file-label">📁 Choose Excel File</label>
@@ -264,9 +304,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 let currentData = [];
+let allData = []; // <--- Store all generated links
 const storeID = "91KDIPL1067-01";
 
-// Helper function to get value from row with multiple possible column names
 function getRowValue(row, possibleKeys) {
     for (const key of possibleKeys) {
         if (row[key] !== undefined && row[key] !== null && row[key] !== '') {
@@ -276,7 +316,6 @@ function getRowValue(row, possibleKeys) {
     return null;
 }
 
-// Generate survey link based on row data
 function generateSurveyLink(row) {
     const receiptNo = getRowValue(row, ['Receipt No.', 'Receipt No', 'ReceiptNo']);
     const salesType = getRowValue(row, ['Sales Type', 'SalesType']);
@@ -286,14 +325,12 @@ function generateSurveyLink(row) {
         return null;
     }
 
-    // Skip if POS receipt matches exclusion patterns
     if (posReceipt && /K855SWG|K855ZMT|K855MAGIC/i.test(posReceipt)) {
         return null;
     }
 
     let surveyModel = '', orderID = '', numericOT = '';
 
-    // Determine survey model and parameters based on receipt number pattern and sales type
     if (/^\d+$/.test(receiptNo) && salesType === 'TAKEAWAY') { 
         surveyModel = '6.0'; 
         orderID = receiptNo; 
@@ -328,13 +365,11 @@ function generateSurveyLink(row) {
         return null; 
     }
 
-    // Get date and time
     const rawDate = getRowValue(row, ['Date', 'Transaction Date']);
     const rawTime = getRowValue(row, ['Time', 'Transaction Time']);
     
     let date = '', time = '', isoDateTime = '';
     
-    // Parse date
     if (rawDate) {
         if (typeof rawDate === 'string') {
             date = rawDate.split(' ')[0];
@@ -342,8 +377,6 @@ function generateSurveyLink(row) {
             date = convertExcelDate(rawDate);
         }
     }
-    
-    // Parse time
     if (rawTime) {
         if (typeof rawTime === 'string') {
             time = rawTime.split('.')[0];
@@ -351,13 +384,10 @@ function generateSurveyLink(row) {
             time = convertExcelTime(rawTime);
         }
     }
-    
-    // Create ISO datetime
     if (date && time) {
         isoDateTime = `${date}T${time}Z`;
     }
 
-    // Get phone number
     const phoneRaw = getRowValue(row, ['Sell-to Contact No.', 'Sell-to Contact No', 'ContactNo']);
     const phoneNumber = phoneRaw ? `91${phoneRaw}` : '';
 
@@ -377,12 +407,10 @@ function generateSurveyLink(row) {
     return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${encodedData}`;
 }
 
-// Excel date/time converters
 function convertExcelDate(serial) {
     const date = new Date((serial - 25569) * 86400 * 1000);
     return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 }
-
 function convertExcelTime(serial) {
     const totalMilliseconds = Math.round(serial * 24 * 60 * 60 * 1000);
     const hours = String(Math.floor(totalMilliseconds / (60 * 60 * 1000))).padStart(2,'0');
@@ -391,7 +419,6 @@ function convertExcelTime(serial) {
     return `${hours}:${minutes}:${seconds}`;
 }
 
-// File processing
 function processFile() {
     const file = document.getElementById('fileInput').files[0];
     if (!file) return showStatus('Please select a file first', 'error');
@@ -404,12 +431,8 @@ function processFile() {
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
             
-            // Get the range of the worksheet
             const range = XLSX.utils.decode_range(worksheet['!ref']);
-            
-            // Find the header row
-            let headerRowIndex = -1;
-            let dataStartRow = -1;
+            let headerRowIndex = -1; let dataStartRow = -1;
             
             for (let R = range.s.r; R <= range.e.r; ++R) {
                 const cellAddress = XLSX.utils.encode_cell({c: 0, r: R});
@@ -420,39 +443,26 @@ function processFile() {
                     break;
                 }
             }
-            
             if (headerRowIndex === -1) {
-                headerRowIndex = 2;
-                dataStartRow = 3;
+                headerRowIndex = 2; dataStartRow = 3;
             }
-            
-            // Set the range to read from the header row onwards
             const newRange = XLSX.utils.encode_range({
                 s: {c: range.s.c, r: headerRowIndex},
                 e: {c: range.e.c, r: range.e.r}
             });
             worksheet['!ref'] = newRange;
-            
-            // Convert to objects
             const sheetData = XLSX.utils.sheet_to_json(worksheet);
-            
-            currentData = [];
-            const tbody = document.querySelector('#linkTable tbody');
-            tbody.innerHTML = '';
 
-            let processedCount = 0;
-            let errorCount = 0;
-            let filteredCount = 0;
-            
+            allData = []; // Reset when new file is uploaded
+            let processedCount = 0, errorCount = 0, filteredCount = 0;
+
             sheetData.forEach((row, index) => {
                 try {
-                    // Check if row should be filtered out
                     const posReceipt = getRowValue(row, ['POS Receipt No.', 'POS Receipt No', 'POSReceiptNo']);
                     if (posReceipt && /K855SWG|K855ZMT|K855MAGIC/i.test(posReceipt)) {
                         filteredCount++;
                         return;
                     }
-                    
                     const link = generateSurveyLink(row);
                     if (link) {
                         processedCount++;
@@ -462,15 +472,7 @@ function processFile() {
                             link: link,
                             copied: false
                         };
-                        currentData.push(linkData);
-
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${linkData.receiptNo}</td>
-                            <td>${linkData.salesType}</td>
-                            <td><button class="copy-btn" data-index="${currentData.length - 1}">Copy Link</button></td>
-                        `;
-                        tbody.appendChild(tr);
+                        allData.push(linkData);
                     } else {
                         errorCount++;
                     }
@@ -479,17 +481,10 @@ function processFile() {
                 }
             });
 
-            // Add event listeners to all copy buttons
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    copyIndividualLink(index, this);
-                });
-            });
+            // Filtering logic added
+            filterLinks();
 
-            // Update summary
             updateSummary(processedCount, errorCount, filteredCount, sheetData.length);
-            
             if (processedCount > 0) {
                 showStatus(`Successfully generated ${processedCount} survey links`, 'success');
                 document.getElementById('copyAllBtn').disabled = false;
@@ -497,7 +492,6 @@ function processFile() {
             } else {
                 showStatus('No valid records found to generate links', 'error');
             }
-            
         } catch (err) {
             showStatus('Error processing file: ' + err.message, 'error');
         }
@@ -508,7 +502,44 @@ function processFile() {
     reader.readAsArrayBuffer(file);
 }
 
-// Update summary information
+// Render filtered data in the table
+function renderTable(filteredData) {
+    const tbody = document.querySelector('#linkTable tbody');
+    tbody.innerHTML = '';
+    filteredData.forEach((linkData, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${linkData.receiptNo}</td>
+            <td>${linkData.salesType}</td>
+            <td><button class="copy-btn" data-index="${idx}">Copy Link</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+    document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            copyIndividualLink(index, this);
+        });
+    });
+}
+
+// Filter data based on sales type selection
+function filterLinks() {
+    const filter = document.getElementById('salesTypeFilter').value;
+    if (filter === "ALL") {
+        currentData = allData.slice();
+    } else {
+        currentData = allData.filter(item => item.salesType === filter);
+    }
+    renderTable(currentData);
+    // Enable/disable copy and export buttons based on filtered data
+    document.getElementById('copyAllBtn').disabled = currentData.length === 0;
+    document.getElementById('exportBtn').disabled = currentData.length === 0;
+}
+
+// Listen to sales type filter changes
+document.getElementById('salesTypeFilter').addEventListener('change', filterLinks);
+
 function updateSummary(processed, errors, filtered, total) {
     const summaryEl = document.getElementById('summary');
     summaryEl.innerHTML = `
@@ -521,17 +552,10 @@ function updateSummary(processed, errors, filtered, total) {
     summaryEl.style.display = 'block';
 }
 
-// Copy individual link
 function copyIndividualLink(index, button) {
     const linkData = currentData[index];
-    
-    if (linkData.copied) {
-        return;
-    }
-    
+    if (linkData.copied) { return; }
     const link = linkData.link;
-    
-    // Create a temporary textarea element
     const textArea = document.createElement("textarea");
     textArea.value = link;
     textArea.style.position = "fixed";
@@ -540,7 +564,6 @@ function copyIndividualLink(index, button) {
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-    
     try {
         const successful = document.execCommand('copy');
         if (successful) {
@@ -548,7 +571,6 @@ function copyIndividualLink(index, button) {
             button.textContent = 'Copied!';
             button.classList.add('copied');
             button.disabled = true;
-            
             showStatus('Link copied to clipboard!', 'success');
         } else {
             showStatus('Failed to copy link', 'error');
@@ -556,15 +578,11 @@ function copyIndividualLink(index, button) {
     } catch (err) {
         showStatus('Failed to copy link', 'error');
     }
-    
     document.body.removeChild(textArea);
 }
 
-// Copy all links
 function copyAllLinks() {
     const links = currentData.map(item => item.link).join('\n');
-    
-    // Create a temporary textarea element
     const textArea = document.createElement("textarea");
     textArea.value = links;
     textArea.style.position = "fixed";
@@ -573,20 +591,17 @@ function copyAllLinks() {
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-    
     try {
         const successful = document.execCommand('copy');
         if (successful) {
             currentData.forEach((item, index) => {
                 item.copied = true;
             });
-            
             document.querySelectorAll('.copy-btn').forEach(button => {
                 button.textContent = 'Copied!';
                 button.classList.add('copied');
                 button.disabled = true;
             });
-            
             showStatus('All links copied to clipboard!', 'success');
         } else {
             showStatus('Failed to copy all links', 'error');
@@ -594,19 +609,15 @@ function copyAllLinks() {
     } catch (err) {
         showStatus('Failed to copy all links', 'error');
     }
-    
     document.body.removeChild(textArea);
 }
 
-// Export to CSV
 function exportToCSV() {
     if (currentData.length === 0) return showStatus('No data to export', 'error');
-    
     let csvContent = "Receipt No.,Sales Type,Generated Link\n";
     currentData.forEach(row => {
         csvContent += `"${row.receiptNo}","${row.salesType}","${row.link}"\n`;
     });
-    
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
@@ -619,9 +630,9 @@ function exportToCSV() {
     showStatus('CSV exported successfully!', 'success');
 }
 
-// Clear all data
 function clearData() {
     currentData = [];
+    allData = [];
     document.querySelector('#linkTable tbody').innerHTML = '';
     document.getElementById('fileInput').value = '';
     document.getElementById('fileName').textContent = 'No file chosen';
@@ -632,13 +643,11 @@ function clearData() {
     document.getElementById('summary').style.display = 'none';
 }
 
-// Show status message
 function showStatus(message, type) {
     const statusEl = document.getElementById('status');
     statusEl.textContent = message;
     statusEl.className = `status ${type}`;
     statusEl.style.display = 'block';
-    
     if (type === 'success') {
         setTimeout(() => {
             statusEl.style.display = 'none';
@@ -646,7 +655,6 @@ function showStatus(message, type) {
     }
 }
 
-// Enable generate button when file is selected and show file name
 document.getElementById('fileInput').addEventListener('change', function() {
     const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('fileName').textContent = fileName;
